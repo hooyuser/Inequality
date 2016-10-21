@@ -1,0 +1,1225 @@
+\RequirePackage[l2tabu, orthodox]{nag}
+%\documentclass[a4paper]{article}
+\documentclass{memoir}
+\usepackage[T1]{fontenc}
+\usepackage{titlesec,titletoc,multicol,titling}
+\usepackage{amsmath,latexsym}
+\usepackage{amssymb,amsfonts,amsthm,mathrsfs}
+%\usepackage[nottoc]{tocbibind}
+\usepackage{verbatim,cite}
+\usepackage{enumerate}
+\usepackage{geometry}
+\usepackage{cases}
+\usepackage{mathtools}
+\usepackage{enumerate}
+\usepackage{setspace}
+\usepackage{xfrac}
+\usepackage{esint}
+%\usepackage{fancyhdr}
+%\usepackage[Lenny]{fncychap}
+\usepackage{cmbright}
+\usepackage{microtype}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\usepackage{refcount}
+\usepackage[colorlinks,linkcolor=black]{hyperref}
+\usepackage{tikz}
+\usetikzlibrary{calc}
+
+% autoref
+
+\def\equationautorefname{formule}%
+%\def\footnoteautorefname{footnote}%
+%\def\itemautorefname{item}%
+%\def\figureautorefname{figure}%
+%\def\tableautorefname{table}%
+%\def\partautorefname{part}%
+%\def\appendixautorefname{appendix}%
+\def\chapterautorefname{Chapter}
+%\def\sectionautorefname{section}%
+%\def\subsectionautorefname{subsection}%
+%\def\subsubsectionautorefname{subsubsection}%
+%\def\paragraphautorefname{paragraph}%
+%\def\subparagraphautorefname{subparagraph}%
+%\def\FancyVerbLineautorefname{FancyVerbLine}%
+%\def\theoremautorefname{theorem}%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% colors to be used
+\definecolor{myred}{RGB}{127,0,0}
+\definecolor{myyellow}{RGB}{169,121,69}
+
+% a command to circle the part numbers
+\newcommand\Circle[1]{\tikz[overlay,remember picture] 
+	\node[draw=myyellow,circle, text width=18pt,line width=1pt,align=center] {#1};}
+
+% redefinition of the name of the ToC
+\renewcommand\printtoctitle[1]{\HUGE\sffamily\bfseries\color{myred}#1}
+
+\makeatletter
+% redefinitions for part entries
+\renewcommand\cftpartfont{\Huge\sffamily\bfseries}
+\renewcommand\partnumberline[1]{%
+	\hbox to \textwidth{\hss\Circle{\textcolor{myyellow}{#1}}\hss}%
+	\vskip3.5ex\color{myred}}
+
+\renewcommand*{\l@part}[2]{%
+	\ifnum \c@tocdepth >-2\relax
+	\cftpartbreak
+	\begingroup
+	{\interlinepenalty\@M
+		\leavevmode
+		\settowidth{\@tempdima}{\cftpartfont\cftpartname}%
+		\addtolength{\@tempdima}{\cftpartnumwidth}%
+		\let\@cftbsnum \cftpartpresnum
+		\let\@cftasnum \cftpartaftersnum
+		\let\@cftasnumb \cftpartaftersnumb
+		\advance\memRTLleftskip\@tempdima \null\nobreak\hskip -\memRTLleftskip
+		\centering{\cftpartfont#1}\par%
+	}
+	\nobreak
+	\global\@nobreaktrue
+	\everypar{\global\@nobreakfalse\everypar{}}%
+	\endgroup
+	\fi}
+
+% redefinitions for chapter entries
+\renewcommand\chapternumberline[1]{\mbox{\Large\@chapapp~#1}\par\noindent}
+\renewcommand\cftchapterfont{\Large\sffamily}
+\cftsetindents{chapter}{0pt}{0pt}
+\renewcommand\cftchapterpagefont{\HUGE\sffamily\bfseries\color{myred}}
+
+\newcommand*{\l@mychap}[3]{%
+	\def\@chapapp{#3}\vskip1ex%
+	\par\noindent\begin{minipage}{\textwidth}%
+		\parbox{4.7em}{%
+			\hfill{\cftchapterpagefont#2}%
+		}\hspace*{1.5em}%
+		\parbox{\dimexpr\textwidth-4.7em-15pt\relax}{%
+			\cftchapterfont#1%
+		}%
+	\end{minipage}\par\vspace{2ex}%
+}
+
+\renewcommand*{\l@chapter}[2]{%
+	\l@mychap{#1}{#2}{\chaptername}%
+}
+
+\renewcommand*{\l@appendix}[2]{%
+	\l@mychap{#1}{#2}{\appendixname}%
+}
+
+% redefinitions for section entries
+\renewcommand\cftsectionfont{\sffamily}
+\renewcommand\cftsectionpagefont{\sffamily\itshape\color{myred}}
+\renewcommand{\cftsectionleader}{\nobreak}
+\renewcommand{\cftsectionafterpnum}{\cftparfillskip}
+\cftsetindents{section}{7.5em}{3em}
+\renewcommand\cftsectionformatpnum[1]{%
+	\hskip1em\hbox to 4em{{\cftsectionpagefont #1\hfill}}}
+
+% redefinitions for subsection entries
+\renewcommand\cftsubsectionfont{\sffamily}
+\renewcommand\cftsubsectionpagefont{\sffamily\itshape\color{myred}}
+\renewcommand\cftsubsectionleader{\nobreak}
+\renewcommand{\cftsubsectionafterpnum}{\cftparfillskip}
+\renewcommand\cftsubsectiondotsep{\cftnodots}
+\cftsetindents{subsection}{10.5em}{3em}
+\renewcommand\cftsubsectionformatpnum[1]{%
+	\hskip1em\hbox to 4em{{\cftsubsectionpagefont #1\hfill}}}
+\makeatother
+
+\settocdepth{subsection}
+\setsecnumdepth{subsection}
+
+% length to be used when drawing a line from the top of the text area
+\newlength\Myhead
+\setlength\Myhead{\dimexpr\headheight+\headsep+1in+\voffset+5ex\relax}
+
+% length to be used when drawing a line to the bottom of the text area
+\newlength\Myfoot
+\setlength\Myfoot{\dimexpr\paperheight-\Myhead-\textheight-\footskip+5ex\relax}
+
+% auxiliary counter to place labels
+\newcounter{chapmark}
+
+% Adds a mark and a label at the beginning of each chapter entry in the ToC and draws a line 
+% from the start of the chapter to the bottom of the text area if the mark 
+% for the chapter ending lies in a different page than the one from the end of the chapter.
+% (the value of tjose pages is calculated using the label)
+% Must be used right before each \chapter command
+\newcommand\StartMark{%
+	\addtocontents{toc}{\protect\label{st\thechapmark}%
+		\protect\begin{tikzpicture}[overlay,remember picture,baseline]   
+		\protect\node [anchor=base] (s\thechapmark) {};%
+		\ifnum\getpagerefnumber{st\thechapmark}=\getpagerefnumber{en\thechapmark} \else
+		\protect\draw[myyellow,line width=3pt] let \protect\p3= (s\thechapmark),%
+		\protect\p4 = (current page.south) in %
+		($ (4em,\protect\y3) + (0,-1ex) $) -- ($ (4em,\protect\y4) + (0,\protect\the\Myfoot)$);\fi
+		\protect\end{tikzpicture}\par}%
+}
+
+% Adds a mark and a label at the end of each chapter entry in the ToC and draws a line from 
+% the top of the text area to the ending of the chapter if the mark 
+% for the chapter ending lies in a different page than the one from the start of the chapter
+% if both marks are in the same page, simple draws a line connecting the marks
+% (the value of tjose pages is calculated using the label)
+% Must be used right after the last sectional unit (that will go to the ToC) belonging to 
+% a chapter
+\newcommand\EndMark{
+	\addtocontents{toc}{\protect\label{en\thechapmark}%
+		\protect\begin{tikzpicture}[overlay,remember picture,baseline]   
+		\protect\node [anchor=base] (e\thechapmark) {};
+		\ifnum\getpagerefnumber{st\thechapmark}=\getpagerefnumber{en\thechapmark} 
+		\protect\draw[myyellow,line width=3pt] let \protect\p1= (s\thechapmark), \protect\p2=(e\thechapmark) in ($ (4em,\protect\y1) + (0,-1ex) $) -- ($ (4em,\protect\y2) + (0,2ex) $);
+		\else%
+		\protect\draw[myyellow,line width=3pt] let \protect\p1= (e\thechapmark), \protect\p2=(current page.north) in ($(4em,\protect\y2) + (0,-\protect\the\Myhead)$) -- ($ (4em,\protect\y1) + (0,1.5ex) $);
+		\fi
+		\protect\end{tikzpicture}\par}\stepcounter{chapmark}%
+}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%\geometry{left=3.25cm,right=3.25cm,top=2.5cm,bottom=2.5cm}
+%\setlength{\parindent}{0pt}
+
+%document
+\begin{document}
+
+
+
+
+
+
+\renewcommand{\arraystretch}{1.2}
+\newcommand{\upcite}[1]{\textsuperscript{\cite{#1}}}
+
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{example}{Example}[section]
+\newtheorem{definition}{Definition}[section]
+
+
+\title{INEQUALITY SUMMARY}
+\author{Hooy Chen}
+\maketitle
+\newpage
+
+%\begin{abstract}
+%	\setlength{\parindent}{0pt} \setlength{\parskip}{1.5ex plus 0.5ex
+%		minus 0.2ex} %\noindent
+%    This article summarizes some of common inequalities.
+%\end{abstract}
+%\newpage
+
+\pdfbookmark[1]{Contents}{anchor}
+
+\tableofcontents*
+
+% Create a new 1st level heading
+
+\part{Famous Theorems}
+
+\StartMark
+\chapter{Jensen's Inequality}
+\section{Statement}
+\begin{definition}
+	Suppose $f$ is a function of one real variable defined on an interval $X$. $f$ is called \emph{convex} if:
+	\[\forall x_{1},x_{2}\in X,\forall t\in [0,1]:\qquad f(tx_{1}+(1-t)x_{2})\leqslant tf(x_{1})+(1-t)f(x_{2}).	
+	\]
+	$f$ is called \emph{strictly convex} if:
+	\[\forall x_{1},x_{2}\in X(x_1\ne x_2),\forall t\in [0,1]:\qquad f(tx_{1}+(1-t)x_{2})<tf(x_{1})+(1-t)f(x_{2}).	
+	\]
+	
+		A function $f$ is said to be \emph{(strictly) concave} if $\textnormal{-}f$ is (strictly) convex.
+	
+\end{definition}
+
+\par \ \par \
+
+\begin{theorem}
+For a real convex function $f$, numbers $x_1,x_2,\cdots ,x_n$ in its domain, and positive weights $p_i$, Jensen's inequality can be stated as:
+    \begin{equation}
+    f\left(\frac{\sum\limits_{i=1}^{n} p_ix_i}{\sum\limits_{i=1}^{n} p_i}\right)\leqslant
+    \frac{\sum\limits_{i=1}^{n} p_if(x_i)}{\sum\limits_{i=1}^{n} p_i}
+    \label{1.1}
+    \end{equation}
+and the inequality is reversed if $f$ is concave, which is
+    \begin{equation}
+    f\left(\frac{\sum\limits_{i=1}^{n} p_ix_i}{\sum\limits_{i=1}^{n} p_i}\right)\geqslant
+    \frac{\sum\limits_{i=1}^{n} p_if(x_i)}{\sum\limits_{i=1}^{n} p_i}.
+    \label{1.2}
+    \end{equation}
+Equality holds if and only if $x_1=x_2=\cdots=x_n$ or $f$ is linear\upcite{DavidChandler}.\\
+\end{theorem}
+As a particular case, if the weights $p_i$ are all equal, then 
+(\ref{1.1}) and (\ref{1.2}) become  
+    \begin{equation}
+    f\left(\frac{\sum x_i}{n}\right)\leqslant
+    \frac{\sum f(x_i)}{n}
+    \label{1.3}
+    \end{equation}
+and
+    \begin{equation}
+    f\left(\frac{\sum x_i}{n}\right)\geqslant
+    \frac{\sum f(x_i)}{n}.
+    \end{equation}      
+
+For instance, if $\lambda_1$ and $\lambda_2$ are two arbitrary nonnegative real numbers such that $\lambda_1 + \lambda_2 = 1$ then convexity of $\varphi$ implies
+\[\forall x_1, x_2 :\qquad \varphi \left(\lambda_1 x_1 +\lambda_2 x_2\right)\leqslant \lambda_1\varphi(x_1)+\lambda_2\varphi(x_2).\]
+This can be generalized: if $\lambda_1,\lambda_2, \cdots , \lambda_n$ are nonnegative real numbers such that $\lambda_1 +\lambda_2+ \cdots + \lambda_n = 1$, then
+\begin{equation}
+\varphi \left( \lambda _{1}x_{1}+\lambda _{2}x_{2}+\cdots +\lambda _{n}x_n\right) \leqslant\lambda _{1}\varphi (x_{1})+\lambda _{2}\varphi (x_{2})+\cdots +\lambda_n\varphi(x_n)
+\label{1.5}
+\end{equation}
+for any $x_1, x_2, \cdots , x_n$.
+We also notice that if let $\lambda_i=\dfrac{p_i}{\sum_{k=1}^{n}p_k} (i=1,2,\cdots,n)$, then \autoref{1.5} is equivalent to \autoref{1.1}.
+\par \ \par \
+\begin{example}
+	Let $a,b,c>0$ subject to $a+b+c=1$, prove that
+	\[
+	\left(a+\dfrac{1}{a}\right)^3+\left(b+\dfrac{1}{b}\right)^3+\left(c+\dfrac{1}{c}\right)^3\geqslant\dfrac{1000}{3}.
+	\]
+\end{example}
+\begin{proof}[\textbf{Proof}]
+	Consider a function $f(x)=\left(x+\dfrac{1}{x}\right)^3(x>0)$. Since its second derivative $f"(x)=\dfrac{6(x^6+x^2+2)}{x^5}>0$, $f$ is convex on the interval $(0,+\infty)$. Using the  \autoref{1.3} we have
+	\[
+	f(\dfrac{a+b+c}{3})\leqslant\dfrac{f(a)+f(b)+f(c)}{3}.
+	\]
+    Applyng $a+b+c=1$ to the above formula, what to be proved turns out.
+	
+\end{proof}
+\par \ \par \ \par \ 
+
+\section{Proof of the inequality}
+\begin{proof}[\textbf{Proof}]
+This finite form of the Jensen's inequality can be proved by induction: by convexity hypotheses, the statement is true for $n = 2$. Suppose it is true also for some $n$, one needs to prove it for $n+1$. At least one of the $\lambda_i$ is strictly positive, say $\lambda_1$; therefore by convexity inequality:
+\[\varphi \left(\sum_{i=1}^{n+1} \lambda_i x_i \right) = \varphi\left(\lambda_1x_1+(1-\lambda _{1})\sum \limits^{n+1}_{i=2}\frac{\lambda _{i}}{1-\lambda _{1}} x_{i}\right)\]
+
+\[\leqslant \lambda_1\varphi(x_1)+(1-\lambda _{1})\varphi\left(\sum \limits^{n+1}_{i=2}\frac{\lambda _{i}}{1-\lambda _{1}} x_{i}\right).\]
+Since
+\[\sum \limits^{n+1}_{i=2}\frac{\lambda _{i}}{1-\lambda _{1}} =1,\]
+one can apply the induction hypotheses to the last term in the previous formula to obtain
+\[\varphi\left(\sum \limits^{n+1}_{i=2}\frac{\lambda _{i}}{1-\lambda _{1}} x_{i}\right)\leqslant
+\sum\limits^{n+1}_{i=2}\frac{\lambda _{i}}{1-\lambda _{1}}\varphi\left(x_{i}\right).
+\]
+Now we can see
+\[
+\varphi \left(\sum_{i=1}^{n+1} \lambda_i x_i \right)\leqslant
+\lambda_1\varphi(x_1)+(1-\lambda _{1})\sum\limits^{n+1}_{i=2}\frac{\lambda _{i}}{1-\lambda _{1}}\varphi\left(x_{i}\right)=
+\sum_{i=1}^{n+1} \lambda_i\varphi \left( x_i \right),
+\]
+ namely the finite form of the Jensen's inequality, thereby showing it is also true for $n+1$. By mathematical induction, \autoref{1.5} is true for all $n\in\mathbb{N^*}$\upcite{Rudin}.
+\end{proof}
+\par \ 
+\par \ 
+\par \ 
+
+
+\section{Application}
+\begin{example}
+	Let positive numbers $ b_i  $ such that $ \sum\limits_{i=1}^{n}b_i=1 (i=1,2,\cdots,n)$. Prove that 
+	\[
+	\frac{1}{n}\leqslant  b_1^{b_{1}}b_{2}^{b_{2}}\cdots b_{n}^{b_{n}}\leqslant \sum_{i=1}^{n}b_{i}^{2}.
+	\] 
+\end{example}
+\begin{proof}[\textbf{Proof}]
+	Consider a concave function $f(x)=\ln x \ (x\in \mathbb{R^{+}})$.Since $ \sum\limits_{i=1}^{n}b_i=1 $, we have
+	\[\sum_{i=1}^{n}b_{i}f(b_{i})\leqslant f\left(\sum_{i=1}^{n}b_i\cdot b_i\right),\quad \sum_{i=1}^{n}b_{i}f(\frac{1}{b_{i}})\leqslant f\left(\sum_{i=1}^{n}b_i\cdot \frac{1}{b_{i}}\right),\]
+	so
+	\[\ln\left(\prod_{i=1}^{n}b_{i}^{b_i}\right)\leqslant  \ln\left(\sum_{i=1}^{n}b_i^2\right),\quad   -\ln\left(\prod_{i=1}^{n}b_{i}^{b_i}\right)\leqslant \ln n.\rule{0.7cm}{0ex}\]
+	We note that $f(x)$ is increasing, thus it follows that
+	\[
+	\frac{1}{n}\leqslant \prod_{i=1}^{n}b_{i}^{b_i} \leqslant \sum_{i=1}^{n}b_{i}^{2}.
+	\] 
+\end{proof}
+\par \ \par \ 
+
+\begin{example}
+	Let $ x_i\in \mathbb{R^{+}} (i=1,2,\cdots,n)$. Show that
+	\[
+	\left(x_1+\dfrac{1}{x_1}\right)\left(x_2+\dfrac{1}{x_2}\right)\cdots\left(x_n+\dfrac{1}{x_n}\right)\geqslant\left(\sqrt[n]{x_1x_2\cdots x_n} + \dfrac{1}{\sqrt[n]{x_1x_2\cdots x_n}}\right)^n.\]
+\end{example}
+\begin{proof}[\textbf{Proof}]
+	We can assume $ x_i=\text{e}^{\, y_i} $ and so $ y_i=\ln x_i (i=1,2,\cdots,n) $, thus
+	\[
+	\prod_{i=1}^{n}\left(x_i+\dfrac{1}{x_i}\right)\geqslant \left(G_n+G_n^{\,\textnormal{-}1}\right)^n
+	\]
+	is equivalent to
+	\[
+	\prod_{i=1}^{n}\left(\text{e}^{\, y_i}+\text{e}^{\, -y_i}\right)\geqslant \left(\text{e}^{\tfrac{\sum y_i}{n}} +\text{e}^{-\tfrac{\sum y_i}{n}}\right)^n.
+	\]
+	Since logarithmic function $ y=\ln x $ is increasing, we only need to prove
+	\[
+	\dfrac{1}{n}\sum\limits_{i=1}^{n}\ln\left(\text{e}^{\, y_i}+\text{e}^{\, -y_i}\right)\geqslant \ln\left(\text{e}^{\tfrac{\sum y_i}{n}} +\text{e}^{-\tfrac{\sum y_i}{n}}\right).
+	\]
+	Let $f(x)=\ln\left(\text{e}^{\,x}+\text{e}^{\,-x}\right)$. $f"(x)=\dfrac{4\text{e}^{2x}}{\left(\text{e}^{2x}+1\right)^2}> 0$ , and therfore $f$ is strictly convex. By Jensen's Inequality, it follows that 
+	\[
+	\frac{1}{n}\sum_{i=1}^{n} f\left(y_i\right) \geqslant f\left(\frac{1}{n}\sum_{i=1}^{n}y_i\right).
+	\] 
+	This completes the proof.
+	
+\end{proof}	
+\par \ \par \ 
+
+
+\begin{example}
+	Let $ a_i \in \mathbb{R^{+}},0\leqslant x_i \leqslant 1(i=1,2,\cdots ,n) $ and $ \sum\limits_{i=1}^{n}a_i=1 $. Prove that	
+	\[
+	\sum_{i=1}^{n}\dfrac{a_i}{1+x_i}\leqslant\dfrac{1}{1+x_{1}^{a_{1}}x_{2}^{a_{2}}\cdots x_{n}^{a_{n}}}.
+	\]
+	Equality holds if and only if $x_1=x_2=\cdots=x_n$.	
+\end{example}
+\begin{proof}[\textbf{Proof}]
+	If some $ x_j $ equals $ 0 $, we obtain
+	\[
+	\sum_{i=1}^{n}\dfrac{a_i}{1+x_i}\leqslant\sum\limits_{i=1}^{n}a_i=1=\dfrac{1}{1+x_{1}^{a_{1}}x_{2}^{a_{2}}\cdots x_{n}^{a_{n}}}.
+	\]
+	If $0< x_i \leqslant 1$, consider a function $f(t)=\dfrac{1}{1+e^{t}}(t\leqslant0).$
+	Since $f"(t)=\dfrac{e^{t}(e^{t}-1)}{(e^t+1)^3}<0$, that is to say, $ f(t) $ is concave for all $ x\in (-\infty,0] $, we have
+	\[
+	\sum_{i=1}^{n}a_if(\ln x_i)\leqslant f\left(\sum_{i=1}^{n}a_i\ln x_i\right).
+	\]
+	Simplify it and we get
+	\[
+	\sum_{i=1}^{n}\dfrac{a_i}{1+x_i}\leqslant(1+x_{1}^{a_{1}}x_{2}^{a_{2}}\cdots x_{n}^{a_{n}})^{-1}.
+	\]		
+\end{proof}	
+\par \ 	\par \ 
+			
+		
+		
+\begin{example}
+	Assume a matrix consisting of $ m\times n $ numbers 
+	\[\left(\begin{array}{cccc}
+	a_{11}& a_{12}& \cdots & a_{1n} \\
+	a_{21}& a_{22}& \cdots & a_{2n} \\
+	\vdots& \vdots & & \vdots \\
+	a_{m1}& a_{m2}& \cdots & a_{mn}
+	\end{array}\right)\]
+	such that $ a_{ij} > 1 \  (1\leqslant i \leqslant m, 1\leqslant j \leqslant n)$. If we mark the arithmetic mean of the $i^{th}$ row as $  A_i=\dfrac{1}{n}\sum\limits_{j=1}^{n}a_{ij} $, show that
+	\[ \prod_{j=1}^{n}\left(\dfrac{a_{1j}a_{2j}\cdots a_{mj}+1}{a_{1j}a_{2j}\cdots a_{mj}-1}\right)\geqslant \left(\dfrac{A_{1}A_{2}\cdots A_{m}+1}{A_{1}A_{2}\cdots A_{m}-1}\right)^n.\]
+\end{example}
+
+\begin{proof}[\textbf{Proof}]
+	Assume $f(x)=\ln\dfrac{e^x+1}{e^x-1}\left(x\in\mathbb{R^+}\right)$. We claim f(x) is convex since $f"(x)=\dfrac{2e^{x}(e^{2x}+1)}{(e^{2x}-1)^2}>0$. Set the geometrical mean of the $i^{th}$ row $ G_i=(a_{i1}a_{i2}\cdots a_{in})^{\frac{1}{n}} $ and $x_j=\ln(a_{1j}a_{2j}\cdots a_{mj}).$ We can easily check that
+	\[
+	\frac{1}{n}\sum_{j=1}^{n} x_j
+	=\frac{1}{n}\sum_{j=1}^{n}\ln\prod_{i=1}^{m}a_{ij}
+	=\frac{1}{n}\sum_{i=1}^{m}\ln\prod_{j=1}^{n}a_{ij}
+	=\sum_{i=1}^{m}\ln G_i.
+	\]
+	From Jensen's Inequality it follows that
+    \[
+    \frac{1}{n}\sum_{j=1}^{n} f\left(x_j\right) \geqslant f\left(\frac{1}{n}\sum_{j=1}^{n} x_j\right),
+    \]     
+    i.e.
+    \[
+    \frac{1}{n}\sum_{j=1}^{n}\ln\left(\dfrac{a_{1j}a_{2j}\cdots a_{mj}+1}{a_{1j}a_{2j}\cdots a_{mj}-1}\right)\geqslant \ln\left(\dfrac{G_{1}G_{2}\cdots G_{m}+1}{G_{1}G_{2}\cdots G_{m}-1}\right).
+    \]
+    It is well known that $G_i\leqslant A_i$ (See also \autoref{chapter2}). Since $f'(x)=-\dfrac{2e^x}{e^{2x}-1}$ and so $ f(x) $ is decreasing, we get
+    \[
+    \sum_{j=1}^{n}\ln\left(\dfrac{a_{1j}a_{2j}\cdots a_{mj}+1}{a_{1j}a_{2j}\cdots a_{mj}-1}\right)\geqslant \ln\left(\dfrac{G_{1}G_{2}\cdots G_{m}+1}{G_{1}G_{2}\cdots G_{m}-1}\right)^n\geqslant \ln\left(\dfrac{A_{1}A_{2}\cdots A_{m}+1}{A_{1}A_{2}\cdots A_{m}-1}\right)^n. 
+    \]
+	Rewrite it as we used to do and we can obtain the inequality to be proved. 
+\end{proof}	
+\par \ \par \ 
+ 	
+
+\begin{example}
+	Maximize $f(x,y,z)=\dfrac{x(2y-z)}{1+x+3y}+\dfrac{y(2z-x)}{1+y+3z}+\dfrac{z(2x-y)}{1+z+3x}$ given $ x,y,z>0 $ such that $x+y+z=1$.	\label{1.3.5}	
+\end{example}
+\begin{proof}[\textbf{Solution}]
+	Notice that \[f(x,y,z)=\sum_{cyc}\dfrac{x(2y-z)}{1+x+3y}=\sum_{cyc}\dfrac{x(2y-z)}{2+(2y-z)}.
+	\]
+    Consider a function $ p(t)=\dfrac{t}{t+2}(t>0) $. We can see $ p(t) $ is strictly concave as $p"(x)=-\dfrac{4}{(t+2)^3}<0$.
+    By Jensen's Inequality we have 
+    \[
+    f(x,y,z)=\sum_{cyc}xp(2y-z)\leqslant p\left(\sum_{cyc}x(2y-z)\right)=p\left(xy+yz+xz\right).
+    \]
+    $p(t)=1-\dfrac{2}{t+2}(t>0)$ is increasing and 
+    \[(x-y)^2+(y-z)^2+(x-z)^2\geqslant 0 \Rightarrow xy+yz+xz\leqslant \dfrac{1}{3}(x+y+z)^2=\dfrac{1}{3}.\]
+    Therefore 
+    \[
+    f(x,y,z)\leqslant p\left(xy+yz+xz\right)\leqslant p\left(\dfrac{1}{3}\right)=\dfrac{1}{7},
+    \]
+    where equality holds if and only if $x=y=z=\dfrac{1}{3}.$ Thus we assert $f(x,y,z)$ has a maximum $ f\left(\dfrac{1}{3},\dfrac{1}{3},\dfrac{1}{3}\right)=\dfrac{1}{7}. $
+
+\end{proof}	
+\par \ 	
+
+\begin{example}
+	Let $a,b,c\in \mathbb{R^+}$. Prove
+	\[
+	f(a,b,c)=
+	\dfrac{a}{\sqrt{a^2+8bc}}+\dfrac{b}{\sqrt{b^2+8ac}}+\dfrac{c}{\sqrt{c^2+8ab}}\geqslant 1.
+	\]
+	
+\end{example}	
+\begin{proof}[\textbf{Proof}]
+	Without loss of generality, we can suppose $a+b+c=1$ .Otherwise $a'+b'+c'=\lambda$, then
+	\[
+	f(a',b',c')=\sum_{cyc}\dfrac{a'}{\sqrt{a'^{\;2}+8b'c'}}=\sum_{cyc}\dfrac{a'/\lambda}{\sqrt{\left(a'/\lambda\right)^2+8(b'/\lambda)(c'/\lambda)}}=f\left(\dfrac{a'}{\lambda},\dfrac{b'}{\lambda},\dfrac{c'}{\lambda}\right)\geqslant 1.
+	\]
+	Let $ p(t)=\dfrac{1}{\sqrt{t}}(t>0) $.The first derivative $p'(t) = -\dfrac{1}{2}t^{\;\textnormal{-}\frac{3}{2}}<0$ and the second derivative $p"(t)=\dfrac{3}{4}t^{\;\textnormal{-}\frac{5}{2}}>0$. So $p$ is convex which implies
+	\[
+	f(a,b,c)=\sum_{cyc}ap(a^2+8bc)\geqslant p\left(\sum_{cyc}a\left(a^2+8bc\right)\right).
+	\]
+	Notice $p(t)$ is decreasing and $p(1)=1$, thus we only need to prove that
+	\[
+	\sum_{cyc}a(a^2+8bc)\leqslant 1=(a+b+c)^3.
+	\] 
+	Actually it clearly follows that
+	\[
+	\sum_{cyc}a^3+8abc\leqslant (a+b+c)^3 \iff 3\sum_{cyc}a(b-c)^2\geqslant0, 
+	\]
+	where  equality holds if and only if $a=b=c.$
+\end{proof}		
+
+\par \ \par \ 
+
+\begin{example}
+	For all $x,y,z\in\mathbb{R^+}$, prove that 
+	\[
+	\sum_{cyc}\sqrt{3x(x+y)(x+z)}\leqslant\sqrt{4(x+y+z)^3}.
+	\] 
+\end{example}
+
+\begin{proof}[\textbf{Proof}]
+		Without loss of generality, we can suppose $x+y+z=1$. It is easy to show function $p(t)=\sqrt{t}$ is concave for $x>0$. Accordingly we have 
+		\begin{align*}
+		\sum_{cyc}\sqrt{3x(x+y)(x+z)}=\sum_{cyc}x\sqrt{\dfrac{3(x+y)(x+z)}{x}}&\leqslant\sqrt{\sum_{cyc}x\dfrac{3(x+y)(x+z)}{x}}\\
+		&=\sqrt{\sum_{cyc}3(1-z)(1-y)}\\
+		&=\sqrt{3\left(1+xy+yz+xz\right)}.
+		\end{align*}
+	    In Example \autoref{1.3.5} we have shown that  
+		$xy+yz+xz\leqslant \dfrac{1}{3}(x+y+z)^2=\dfrac{1}{3}$. Hence 
+		\[
+		\sum_{cyc}\sqrt{3x(x+y)(x+z)}\leqslant\sqrt{3\left(1+\dfrac{1}{3}\right)}=2=\sqrt{4(x+y+z)^3}.
+		\]
+\end{proof}
+\par \ 	\par \ \par \ 
+	
+\section{Generalization}	
+\begin{definition}	
+	Let $\mathbf{x}=(x_1,x_2,\cdots,x_n),\mathbf{p}=(p_1,p_2,\cdots,p_n)$ where $x_i>0, p_i>0(i=1,2,\cdots,n).$ We define
+	\[
+	M_n^r(\mathbf{x},\mathbf{p})=
+		\begin{cases}
+		\left(\dfrac{\sum\limits_{i=1}^{n}p_ix_i^r}{\sum\limits_{i=1}^{n}p_i}\right)^{\tfrac{1}{r}} & {,0<\left|r\right|<+\infty,}\\
+		\left(\prod\limits_{i=1}^{n}x_i^{p_i}\right)^{1\big/{\sum\limits_{i=1}^{n}p_i}} & ,r=0.
+		\end{cases}
+	\]		
+\end{definition}
+\begin{definition}
+	Assume positive continuous function f(x) on interval $I\subset\mathbb{R^+}$. For all $x_1,x_2\in I$ and $p_1,p_2\in\mathbb{R^+}$. $f(x)$ is \emph{generally convex} if and only if
+	\begin{equation}
+	f\left(M_2^r(\mathbf{x},\mathbf{p})\right)\leqslant 	M_2^r(\mathbf{f(x)},\mathbf{p}),
+		\label{1.4.2}
+	\end{equation}
+	where $\mathbf{f(x)}=\left(f(x_1),f(x_2)\right).$ $f(x)$ is \emph{generally strictly convex} when equality in \autoref{1.4.2} holds if and only if $x_1=x_2$. Also \autoref{1.4.2} can be writen as
+	\begin{align*}
+	\left(f\left(\dfrac{p_1}{p_1+p_2}x_1^r+\dfrac{p_2}{p_1+p_2}x_2^r\right)\right)^{\tfrac{1}{r}}&\leqslant
+	\left(\dfrac{p_1}{p_1+p_2}(f(x_1))^r+\dfrac{p_2}{p_1+p_2}(f(x_2))^r\right)^{\tfrac{1}{r}} & & if \; r \ne 0, \\
+	f\left(\left(x_1^{p_1}\cdot x_2^{p_2}\right)^{\tfrac{1}{p_1+p_2}}\right)&\leqslant
+	\left(\left(f(x_1)\right)^{p_1}\cdot\left(f(x_2)\right)^{p_2}\right)^{\tfrac{1}{p_1+p_2}} & & if \; r=0.
+	\end{align*}
+	
+	If the inequality in the \autoref{1.4.2} is reversed, then $f(x)$ is \emph{(strictly) generally concave} on the interval $I$.
+			
+\end{definition}
+   
+    
+    If we set $ p_1=p_2=\frac{1}{2} $, then different particular values of $r$ give different results: 
+      
+    \begin{flalign}
+    &\text{(\romannumeral1)} r=2 ,f\left(\sqrt{\dfrac{x_1^2+x_2^2}{2}}\;\right)\leqslant  \sqrt{\dfrac{(f(x_1))^2+(f(x_2))^2}{2}}&\\
+    &\text{(\romannumeral2)} r=1 ,f\left(\dfrac{x_1+x_2}{2}\right)\leqslant\dfrac{f(x_1)+f(x_2)}{2} &\\
+    &\text{(\romannumeral3)} r=0 ,f\left(\sqrt{ x_1\cdot x_2}\;\right)\leqslant\sqrt{f\left(x_1\right)\cdot f\left(x_2\right)} &\\
+    &\text{(\romannumeral4)} r=-1 ,f\left(\dfrac{2x_1 x_2}{x_1+x_2}\right)\leqslant\dfrac{2f(x_1)f(x_2)}{f(x_1)+f(x_2)} 
+    \end{flalign} 
+
+\begin{theorem}
+	Assume $f(x)$ is generally convex on interval $I\subset\mathbb{R^+}$.For all $x_i\in I$ and $p_i\in\mathbb{R^+}(i=1,2,\cdots,n)$,we have 
+	\begin{equation}
+	f\left(M_n^r(\mathbf{x},\mathbf{p})\right)\leqslant 	M_n^r(\mathbf{f(x)},\mathbf{p})
+	\end{equation}
+	or
+	\begin{align*}
+	f\left(\left(\dfrac{\sum\limits_{i=1}^{n}p_ix_i^r}{\sum\limits_{i=1}^{n}p_i}\right)^{\tfrac{1}{r}}\right)&\leqslant\left(\dfrac{\sum\limits_{i=1}^{n}p_i(f(x_i))^r}{\sum\limits_{i=1}^{n}p_i}\right)^{\tfrac{1}{r}}& & if \; r \ne 0, \\
+	f\left(\prod\limits_{i=1}^{n}x_i^{p_i}\right)^{1\big/{\sum\limits_{i=1}^{n}p_i}}&\leqslant\left(\prod\limits_{i=1}^{n}(f(x_i))^{p_i}\right)^{1\big/{\sum\limits_{i=1}^{n}p_i}} & & if \; r=0.
+	\end{align*}
+\end{theorem}	
+
+\begin{proof}[\textbf{Proof}]
+	We can prove it by induction. If $r\ne 0$, the trick is similar to what we use in the proof of Jensen's inequality. Then let's consider the case $r=0$.
+	
+    1.Basis: According to the definition of generally convex function, we have
+    \[f\left(M_2^r(\mathbf{x},\mathbf{p})\right)\leqslant 	M_2^r(\mathbf{f(x)},\mathbf{p})\]
+    or 
+    \[
+    	f\left(\left(x_1^{p_1}\cdot x_2^{p_2}\right)^{\tfrac{1}{p_1+p_2}}\right)\leqslant
+    	\left(\left(f(x_1)\right)^{p_1}\cdot\left(f(x_2)\right)^{p_2}\right)^{\tfrac{1}{p_1+p_2}}.
+    \]
+	
+	2.Inductive step: Assume the inequality holds for some unspecified value of k. It must then be shown that it holds that :
+	\[
+		f\left(\prod\limits_{i=1}^{k+1}x_i^{p_i}\right)^{1\big/{\sum\limits_{i=1}^{k+1}p_i}}\leqslant\left(\prod\limits_{i=1}^{k+1}(f(x_i))^{p_i}\right)^{1\big/{\sum\limits_{i=1}^{k+1}p_i}}
+	\]
+	Using the basis we can show that 
+	\[
+	f\left(\prod\limits_{i=1}^{k+1}x_i^{p_i}\right)^{1\big/{\sum\limits_{i=1}^{k+1}p_i}}=f\left(x_1^{p_1}\cdot\prod\limits_{i=2}^{k+1}x_i^{p_i}\right)^{1\big/{\sum\limits_{i=1}^{k+1}p_i}}
+	\]
+	  
+\end{proof}
+
+
+\EndMark
+
+
+
+
+\StartMark
+\chapter{Average Value Inequality}
+\label{chapter2}
+\section{The basic form of the inequality of average value}
+
+\begin{theorem}
+	
+	Let $a_i>0$ , $i=1,2,$ \dots $,n.$
+	
+	\begin{equation}
+	\sqrt[n]{\frac{a_1^2+a_2^2+\dots+a_n^2}{n}}
+	\geqslant\frac{a_1+a_2+\dots+a_n}{n}
+	\geqslant\sqrt{a_1a_2\dots a_n}
+	\geqslant\frac{n}{\frac{1}{a_1}+\frac{1}{a_2}+\dots +\frac{1}{a_n}},
+	\end{equation}
+	Equality holds if and only if
+	$a_1=a_2=\cdots=a_n=0$\upcite{Steele}.	
+	The above inequality is often written in this form
+	\[\boldsymbol{Q_n}\geqslant
+	\boldsymbol{A_n}\geqslant
+	\boldsymbol{G_n}\geqslant
+	\boldsymbol{H_n}\ .\]
+	\\
+\end{theorem}
+\par 
+
+
+
+\par  \ \par  \ 
+
+\subsection{AM-GM inequality}
+
+
+\begin{definition}
+	
+	Assume $a=(a_1,a_2,\dots ,a_n)$,
+	$\ a_k\geqslant 0$
+	,$1\leqslant k\leqslant n$.
+	$\boldsymbol{A_n}=\dfrac{1}{n}\sum\limits_{k=1}^n a_k\quad$,
+	called the \emph{Arithmetic Mean} of
+	$\ a_1,a_2,\dots ,a_n\ .\ 
+	\boldsymbol{G_n}=(\prod\limits_{k=1}^n a_k)^\frac{1}{n}\quad$,
+	called the \emph{Geometric Mean} of 
+	$\ a_1,a_2,\dots ,a_n$\upcite{Cauchy}.
+	
+\end{definition}
+\par  \ 
+
+\begin{theorem}
+	\begin{equation}
+	\boldsymbol{A_n}\geqslant \boldsymbol{G_n}	
+	\end{equation}
+	
+	or
+	
+	\begin{equation}
+	\left( \ \frac{1}{n}\sum_{k=1}^n a_k \right)^n\quad\geqslant\quad \prod\limits_{k=1}^n a_k \  .
+	\end{equation}
+\end{theorem}
+
+
+\begin{proof}[\textbf{Proof}]
+	Note that geometrical mean $\boldsymbol{G_n}$ is actually equal to 
+	\[ \exp \left(\frac{\ln x_{1}+\ln x_{2}+\cdots +\ln x_{n}}{n} \right),\]
+	Since the natural logarithm is strictly increasing, AM-GM inequality is equivalent to
+	\[\ln \frac{x_{1}+x_{2}+\cdots +x_{n}}{n} \geqslant \frac{\ln x_{1}+\ln x_{2}+\cdots +\ln x_{n}}{n} .\]
+	Since the natural logarithmic function is strictly concave, according to Jensen's inequality we can imply that the above inequality holds. We have thus proved the theorem.
+	
+\end{proof}
+\par \; 
+\begin{example}
+	
+	Assume $n\in\mathbb{N}^+,x\in\mathbb{R}^+$.Prove that
+	\[x+\frac{1}{nx^n}\geqslant\frac{n+1}{n}\ .\]
+	
+\end{example}
+
+\begin{proof}[\textbf{Proof}]
+	From$\ \boldsymbol{A_n}\geqslant \boldsymbol{G_n}, $ we have
+	\[\frac{a_1+a_2+\dots+a_{n+1}}{n+1}\geqslant\sqrt[n+1]{a_1a_2\dots a_{n+1}}\  ,\]
+	\[x+\frac{1}{nx^n}=\underbrace{\frac{x}{n}+\cdots +\frac{x}{n}}_{n\ numbers}+\frac{1}{nx^n}
+	\geqslant (n+1)\sqrt[n+1]{\frac{1}{n^{n+1}}}
+	=\frac{n+1}{n}\ . \]
+\end{proof}
+
+\par  \; \par  \; 
+
+\begin{theorem}
+	
+	\begin{equation}
+	\boldsymbol{G_n}(\mathbf{a},\mathbf{q})\leqslant \boldsymbol{A_n}(\mathbf{a},\mathbf{q})\ ,
+	\end{equation}
+	where
+	\[\boldsymbol{G_n}(\mathbf{a},\mathbf{q})=\prod_{k=1}^{n} a_k^{q_k}\ ,\ 
+	\boldsymbol{A_n}(\mathbf{a},\mathbf{q})=\sum_{k=1}^{n} q_k a_k\ ,\ 
+	 \sum_{k=1}^{n} q_k =1,\;q_k>0\ (k=1,2,\cdots,n)  ,\]
+	in other words,
+	\[a_1^{q_1} a_2^{q_2}\cdots a_n^{q_n}
+	\leqslant a_1q_1+a_2q_2+\dots +a_nq_n
+	\ ,\ q_1+q_2+\dots +q_n=1
+	\ .\]
+	
+\end{theorem}
+$\boldsymbol{G_n}$ and $\boldsymbol{A_n}$ can be connected by logarithmic transformation . 
+Suppose $\ln \mathbf{a}=(\ln a_1,\ln a_2,\dots ,\ln a_n)$,
+thus \[\ln \boldsymbol{G_n}(\mathbf{a},\mathbf{q})=\ln a_1^{q_1} a_2^{q_2}
+\cdots a_n^{q_n}=\sum_{k=1}^n q_k \ln a_k=\boldsymbol{A_n}(\ln \mathbf{a},\mathbf{q})\;.\]
+
+
+Formula (3) can be generalized.\ Let $ a_{jk} > 0,\ q_k >0,\ and
+\sum\limits_{k=1}^n q_k = 1\ $,
+then
+
+\begin{equation}
+\sum_{j=1}^{m}\left(\prod_{k=1}^{m} a_{jk}^{q_k} \right)\leqslant
+\prod_{k=1}^{m}\Bigg(\sum_{j=1}^{m} a_{jk} \Bigg)^{q_k}
+\end{equation}
+
+\par  \quad
+
+\begin{example}
+	Let $a,b,c,d >0$. Prove that
+	\[\frac{a}{b+c} +\frac{b}{c+d} +\frac{c}{d+a} +\frac{d}{a+b} \geqslant 2.\]
+\end{example}
+\begin{proof}[\textbf{Proof}]
+	\[\frac{a}{b+c} +\frac{b}{c+d} +\frac{c}{d+a} +\frac{d}{a+b} \geqslant 2\]
+	\[\iff \frac{2a+b+c}{b+c} +\frac{2b+c+d}{c+d} +\frac{2c+d+a}{d+a} +\frac{2d+a+b}{a+b} \geqslant 8\]
+	\begin{equation}
+	\iff \left(\frac{a+b}{b+c} +\frac{b+c}{c+d}+\frac{c+d}{d+a}+\frac{d+a}{a+b}\right)+\left(\frac{a+c}{b+c} +\frac{c+a}{d+a}\right) +\left(\frac{b+d}{c+d}+\frac{d+b}{a+b}\right)  \geqslant 8.\tag{a}
+	\end{equation}
+	From $\boldsymbol{A_n}\geqslant \boldsymbol{G_n}$, we obtain
+	\begin{equation}
+	\left(\frac{a+b}{b+c} +\frac{b+c}{c+d}+\frac{c+d}{d+a}+\frac{d+a}{a+b}\right)\geqslant 4\;\sqrt[4]{\frac{a+b}{b+c}\cdot\frac{b+c}{c+d}\cdot\frac{c+d}{d+a}\cdot\frac{d+a}{a+b}}=4\tag{b}
+	\end{equation}
+	and
+	\[\left(a+b+c+d\right)\left(\frac{1}{b+c}+\frac{1}{d+a}\right)=\frac{a+d}{b+c}+\frac{b+c}{a+d}+2\geqslant2\sqrt{\frac{a+d}{b+c}\cdot\frac{b+c}{a+d}}+2=4\]
+	\begin{equation}
+	\iff\frac{a+c}{b+c} +\frac{c+a}{d+a}\geqslant\frac{4\left(a+c\right)}{a+b+c+d}.\tag{c}
+	\end{equation}
+	In a similar way, we have
+	\begin{equation}
+	\frac{b+d}{c+d}+\frac{d+b}{a+b}\geqslant\frac{4\left(b+d\right)}{a+b+c+d}.\tag{d}
+	\end{equation}
+	Add (b), (c), (d) up and we get (a). This completes
+	the proof.
+\end{proof}
+
+\par  \ \par \ 
+\subsection{RMS-AM Inequality}
+\begin{theorem}
+	Root mean square-arithmetic mean inequality states that for positive numbers $x_1,x_2,\cdots,x_n$,
+	\begin{equation}	\sqrt[n]{\frac{a_1^2+a_2^2+\dots+a_n^2}{n}}
+	\geqslant\frac{a_1+a_2+\dots+a_n}{n}.
+	\end{equation}
+\end{theorem}
+\par\;\par
+
+\section{Power Mean Inequality}
+\begin{definition}
+	If $p$ is a non-zero real number, we can define the \emph{generalized mean} or \emph{power mean} with exponent $p$ of the positive real numbers $x_1, x_2,\cdots, x_n$ as:
+	\[
+	M_p(x_1, x_2,\cdots, x_n)=\left( \frac{x^{p}_{1}+x^{p}_{2}+\cdots +x^{p}_{n}}{n} \right) ^{\frac{1}{p} }.
+	\]
+	Furthermore, for a sequence of positive weights $w_i$ with sum $\sum a_i =1$, we define the \emph{weighted power mean} as:
+	\[
+	M_{p}(x_{1},x_{2},\cdots ,x_{n}) =\left( w_{1}x^{p}_{1}+w_{2}x^{p}_{2}+\cdots +w_{n}x^{p}_{n}\right) ^{\frac{1}{p} }.
+	\]
+	The unweighted means correspond to setting all $w_i= \frac{1}{n}$.
+\end{definition}
+\par \quad
+\begin{theorem}
+	In general, if $p\le q$, then 
+	\begin{equation}
+	M_p(x_1, x_2,\cdots, x_n) \leqslant
+	M_q(x_1, x_2,\cdots, x_n) ,
+	\end{equation}
+	and the two means are equal if and only if $x_1= x_2= \cdots = x_n$.
+\end{theorem}
+
+If $p\ge 1$, then
+\[\frac{x^{p}_{1}+x^{p}_{2}+\cdots +x^{p}_{n}}{n}\geqslant
+\left( \frac{x_{1}+x_{2}+\cdots +x_{n}}{n} \right) ^{p}.\]
+
+\begin{proof}[\textbf{Proof}]
+	It follows from the fact that, for all real $p$,
+	\[\frac{\partial }{\partial p} M_{p}(x_1, x_2,\cdots, x_n)\geqslant0,\]
+	which can be proved using Jensen's inequality.
+\end{proof}
+
+\EndMark
+
+
+
+
+
+
+\StartMark
+\chapter{Bernoulli's inequality}
+\section{Statement}
+\begin{theorem}
+	If $x> -1$, then
+	\begin{equation}
+	(1+x)^r\geqslant 1+rx
+	\end{equation}
+	for $r\geqslant 1$ or $r\leqslant 0$, and
+	\begin{equation}
+	(1+x)^r\leqslant 1+rx
+	\end{equation}
+	for $0\leqslant r\leqslant 1$, with equality if and only if $x=0$ or $r=0,1$.\upcite{Carothers}
+\end{theorem}
+
+\section{Proof of the inequality}
+\begin{proof}[\textbf{Proof}]
+For $r=0$,
+\[(1+x)^0 \ge 1+0x \] 
+is equivalent to $1≥1$ which is true as required.
+Now suppose the statement is true for $r=k$:
+\[(1+x)^k \ge 1+kx.\]
+Then it follows that
+
+\begin{align}
+& {} \qquad (1+x)(1+x)^k \ge (1+x)(1+kx)\quad\text{(by hypothesis, since }(1+x)\ge 0) \\
+& \iff (1+x)^{k+1} \ge 1+kx+x+kx^2, \\
+& \iff (1+x)^{k+1} \ge 1+(k+1)x+kx^2.
+\end{align}
+However, as \[1+(k+1)x+kx^2 \ge 1+(k+1)x (since kx^2 \ge 0 ),\]
+it follows that \[(1+x)^{k+1}≥1+(k+1)x,\] which means the statement is true for $r=k+1$ as required.
+By induction we conclude the statement is true for all $r\ge 0$.
+\end{proof}
+\EndMark
+
+
+
+
+
+\StartMark
+\chapter{Rearrangement Inequality} 
+\section{Statement}
+\begin{theorem}
+	\begin{equation} 
+	x_n y_1+\dots + x_1 y_n\leqslant x_{\sigma (1) } y_1+\dots + x_{\sigma (n)} y_n\leqslant x_1 y_1 +\dots +x_n y_n
+	\end{equation}
+	for every choice of real numbers
+	\[x_1\leqslant \cdots\leqslant x_n \quad and \quad y_1\leqslant\cdots\leqslant y_n\]
+	and every permutation
+	\[x_{\sigma \left(1\right) } ,\dots , x_{\sigma (n)}\]
+	of
+	\[x_1,...,x_n\ .\]\\
+\end{theorem}
+If the numbers are different, meaning that
+\[x_1< \cdots <x_n \quad and \quad y_1<\cdots <y_n\ ,\]
+then the lower bound is attained only for the permutation which reverses the order, i.e.,
+$\sigma (i) = n -i +1$ for all $\;i = 1, ... , n$, and the upper bound is attained only for the identity, i.e., $\sigma (i) = i$ for all $\;i = 1, ... , n$.
+
+Note that the rearrangement inequality makes no assumptions on the signs of the real numbers.\upcite{Hardy}
+\par\;\par\;
+
+\section{Generalization}
+\begin{theorem}
+	
+	\begin{equation}
+	\sum \limits^{n}_{j=1}\prod \limits^{m}_{i=1}a^{\,\prime}_{ij}\leqslant
+	\sum \limits^{n}_{j=1}\prod \limits^{m}_{i=1}a_{ij},\label{1}
+	\end{equation}
+	
+	\begin{equation}
+	\prod \limits^{n}_{j=1}\sum \limits^{m}_{i=1}a^{\,\prime}_{ij}\geqslant
+	\prod \limits^{n}_{j=1}\sum \limits^{m}_{i=1}a_{ij}\label{2}
+	\end{equation}
+	for every choice of real numbers
+	$0\leqslant a_{i1}\leqslant a_{i2} \cdots\leqslant a_{in} $
+	and every permutation
+	$a^{\,\prime}_{i1}\leqslant a^{\,\prime}_{i2} \cdots\leqslant a^{\,\prime}_{in} $
+	of	$a_{i1},a_{i2},\cdots,a_{in}\ (i=1,2,\cdots,m).$
+\end{theorem}
+(\ref{1}) and (\ref{2}) are called \emph{S inequality} and \emph{T inequality} in short.
+To help understand and apply the two inequalities, we consider two 
+matrixes arranged by $m\times n$ numbers ($a^{\,\prime}_{i1}\leqslant a^{\,\prime}_{i2} \cdots\leqslant a^{\,\prime}_{in} ,
+i=1,2,\cdots,m$):
+
+\[A=
+\left(\begin{array}{cccc}
+a_{11}& a_{12}& \cdots & a_{1n} \\
+a_{21}& a_{22}& \cdots & a_{2n} \\
+\vdots& \vdots & & \vdots \\
+a_{n1}& a_{n2}& \cdots & a_{nn}
+\end{array}\right),
+\]
+
+\[A^{\,\prime}=
+\left(\begin{array}{cccc}
+a^{\,\prime}_{11}& a^{\,\prime}_{12}& \cdots & a^{\,\prime}_{1n} \\
+a^{\,\prime}_{21}& a^{\,\prime}_{22}& \cdots & a^{\,\prime}_{2n} \\
+\vdots& \vdots & & \vdots \\
+a^{\,\prime}_{n1}& a^{\,\prime}_{n2}& \cdots & a^{\,\prime}_{nn}
+\end{array}\right),
+\]
+\EndMark
+
+
+\StartMark
+\chapter{Schur's Inequality}
+\section{Statement}
+\begin{theorem}
+	For all non-negative real numbers $x, y, z$ and a positive number $t$,
+	\begin{equation}
+	x^{t}(x-y)(x-z)+y^{t}(y-z)(y-x)+z^{t}(z-x)(z-y)\geqslant0
+	\end{equation}
+	with equality if and only if $x = y = z$ or two of them are equal and the other is zero.\\ 
+\end{theorem}
+
+When $t=1$, the following well-known special case can be derived:
+
+\begin{equation}
+x^3+y^3+z^3+3xyz\geqslant xy(x+y)+xz(x+z)+yz(y+z).
+\end{equation}
+
+\section{Proof of the inequality}
+\begin{proof}[\textbf{Proof}]
+	
+	Since the inequality is symmetric in $x,y,z$. we may assume without loss of generality that $x\geqslant y\geqslant z$. Then the inequality
+	\[(x-y)[x^{t}(x-z)-y^{t}(y-z)]+z^{t}(x-z)(y-z)\geqslant 0\]
+	clearly holds, since every term on the left-hand side of the equation is non-negative. This rearranges to Schur's inequality.
+\end{proof}
+\EndMark
+
+
+
+
+
+
+
+
+\StartMark
+\chapter{Mahler's Inequality}
+\section{Statement}
+\begin{theorem}
+Mahler's inequality, named after Kurt Mahler, states that the geometric mean of the term-by-term sum of two finite sequences of positive numbers is greater than or equal to the sum of their two separate geometric means:
+\begin{equation}
+\prod_{i=1}^n (x_i+y_i)^{\frac{1}{n}}\geqslant\prod_{i=1}^nx_i^{\frac{1}{n}}+\prod_{i=1}^ny_i^{\frac{1}{n}},
+\end{equation}
+when $x_i, y_i > 0$ for all $k$\upcite{Bullen}.
+\end{theorem}
+
+\section{Proof of the inequality}
+\begin{proof}[\textbf{Proof}]
+By the inequality of arithmetic and geometric means, we have:
+\[\prod_{i=1}^n\left( \frac{x_i}{x_i+y_i}\right)^{\frac{1}{n}}
+\leqslant\frac{1}{n}\sum_{i=1}^n\left( \frac{x_i}{x_i+y_i}\right)\]
+and
+\[\prod_{i=1}^n\left( \frac{y_i}{x_i+y_i}\right)^{\frac{1}{n}}
+\leqslant\frac{1}{n}\sum_{i=1}^n\left( \frac{y_i}{x_i+y_i}\right).\]
+Hence,
+\[\prod_{i=1}^n\left( \frac{x_i}{x_i+y_i}\right)^{\frac{1}{n}}+
+\prod_{i=1}^n\left( \frac{y_i}{x_i+y_i}\right)^{\frac{1}{n}}\leqslant
+\frac{1}{n} n=1 .\]
+Clearing denominators then gives the desired result.
+\end{proof}
+
+\EndMark
+
+
+
+\StartMark
+\chapter{Cauchy-Schwartz Inequality}
+\section{Statement}
+
+\begin{theorem}
+
+Let$\ a_i,\:b_i\in \mathbb{R},\;i=1,2,...,n.$
+\begin{equation}
+\left(\sum_{i=1}^n a_i^2\right)\;\left(\sum_{i=1}^n b_i^2\right) \;\geqslant
+\left(\sum_{i=1}^n a_i b_i\right) ^2 \ , 
+\end{equation}
+Equality holds if and only if$\quad a_i=\lambda b_i\;$ ($\lambda$ is a constant).\upcite {Bityutskov} \par  
+\end{theorem}    
+
+\section{Proof of the inequality}
+\begin{proof}[\textbf{Proof}]
+We can check that
+\[\left(\sum_{i=1}^na_i^2\right)\left(\sum_{i=1}^nb_i^2\right) -
+\left(\sum_{i=1}^na_ib_i\right)^2 =\ \sum_{1\leqslant i<j\leqslant n}(a_ib_j-a_jb_i)^2 \geqslant 0 .\]
+ It is now obvious that the theorem holds.
+\end{proof}
+\par \;
+
+\section{Application}
+\begin{example}
+	
+	Prove that for all positive $x,y$ and $z$, we have
+	\[x+y+z\leqslant 2\left(\frac{x^2}{y+z}+\frac{y^2}{x+z}+\frac{z^2}{x+y}\right).
+	\]
+\end{example}	
+
+\begin{proof}[\textbf{Proof}]
+Indeed,	\[(x+y+z)^2=\left(x\sqrt{\frac{y+z}{y+z}}+y\sqrt{\frac{x+z}{x+z}}+z\sqrt{\frac{x+y}{x+y}}\;\right)^2\]
+\[\leqslant \left(\frac{x^2}{y+z}+\frac{y^2}{x+z}+\frac{z^2}{x+y}\right)(y+z+x+z+x+y)
+	\]
+\[\iff x+y+z\leqslant 2\left(\frac{x^2}{y+z}+\frac{y^2}{x+z}+\frac{z^2}{x+y}\right).\]
+	An alternative proof is simply obtained with the Jensen inequality.\\
+	The inequality is
+	\[f\left(\frac{x+y+z}{3}\right)\leqslant\frac{f(x)+f(y)+f(z)}{3}
+	\]
+	for all positive$\ x$,$y$,$z$ with sum $A$, where $\displaystyle f(u)=\frac{u^2}{A-u}$, and $A=x+y+z$.
+	This is equivalent to $f(u)$ being convex in the interval $(0,A)$.The second derivative is\[f''(x) =\frac{2A^2}{(A-u)^3}\geqslant 0 . \]
+	\end{proof}
+\par \ 
+
+\begin{example}
+Let $a_i>0 (i=1,2,\dots,n)$,  and $\sum\limits_{i=1}^n a_i=1$.Then\[\sum \limits^{n}_{i=1}\left(a_{i}+\frac{1}{a_{i}}
+\right)^{2}\geqslant\frac{(1+n^{\,2})^{2}}{n} .\]
+\end{example}
+
+\begin{proof}[\textbf{Proof}]
+\[(1^{2}+1^{2}+ \cdots+1^{2})\sum \limits^{n}_{i=1}\left( a_{i}+\frac{1}{a_{i}} \right) ^{2}\]
+\[\geqslant\left[ \left( a_{1}+\frac{1}{a_{1}}  \right) +\left( a_{2}+\frac{1}{a_{2}} \right)+\cdots+ \left( a_{n}+\frac{1}{a_{n}} \right)\right]^2 \]
+\[=\left(\sum^n_{i=1}a_i+\sum_{i=1}^n\frac{1}{a_i}\right)^2.\]
+Note that\[\sum^n_{i=1}a_i=1,  \;\; \left(\sum^n_{i=1}a_i\right)\cdot\left(\sum_{i=1}^n\frac{1}{a_i}\right)\geqslant n^{2}.\]
+Thus, we can infer that
+\[\sum \limits^{n}_{i=1}\left(a_{i}+\frac{1}{a_{i}}
+\right)^{2}\geqslant\frac{(1+n^{\,2})^{2}}{n} .\]
+\end{proof}
+\par \quad
+
+\begin{example}
+Let $a_1, a_2, \dots,a_n\in\mathbb{R}^+$,$n\in\mathbb{N}^+$,$n\geqslant2$.Then \[\frac{s}{s-a_{1}} +\frac{s}{s-a_{2}} +\cdots +\frac{s}{s-a_{n}}\geqslant \frac{n^{\,2}}{n-1} ,\]where $s=a_1+a_2+\dots+a_n$.
+\end{example}
+
+\begin{proof}[\textbf{Proof}]
+Notice that\[(n-1)s=ns-(s=a_1+a_2+\dots+a_n)=(s-a_1)+(s-a_2)+\dots+(s-a_n).\]
+According to Cauchy–Schwarz inequality, it follows\[\left[(s-a_1)+(s-a_2)+\dots+(s-a_n)\right]\left(\frac{1}{s-a_{1}} +\frac{1}{s-a_{2}} +\cdots +\frac{1}{s-a_{n}}\right)\]
+\[\geqslant\left(\sqrt{s-a_1}\cdot \frac{1}{\sqrt{s-a_ 1} } +\sqrt{s-a_ 2}\cdot \frac{1}{\sqrt{s-a_ 2} } +\cdots +\sqrt{s-a_ n} \cdot\frac{1}{\sqrt{s-a_ n} } \right)^2=n^2.\]
+Hence,\[s(n-1)\left(\frac{1}{s-a_{1}} +\frac{1}{s-a_{2}} +\cdots +\frac{1}{s-a_{n}}\right)\geqslant n^2.\]
+Thus we have derived that\[\frac{s}{s-a_{1}} +\frac{s}{s-a_{2}} +\cdots +\frac{s}{s-a_{n}}\geqslant \frac{n^{\,2}}{n-1} .\]
+\end{proof}
+
+\section{Corollary}
+\begin{theorem}
+\begin{equation}
+\left| \;\sqrt{\sum \limits^{n}_{i=1}a^{2}_{i}} -\sqrt{\sum \limits^{n}_{i=1}b^{2}_{i}} \;\right| \leqslant \sqrt{\sum \limits^{n}_{i=1}(a_{i}-b_{i})^{2}\;}.
+\end{equation}
+\end{theorem}
+
+\begin{proof}[\textbf{Proof}]
+According to Cauchy inequality, we have
+\[\sqrt{\sum \limits^{n}_{i=1}a^{2}_{i}\sum \limits^{n}_{i=1}b^{2}_{i}} \geqslant\sum \limits^{n}_{i=1}a_{i}b_{i}.\]
+Then
+\[\sum\limits^{n}_{i=1}a^{2}_{i}
+-2\sqrt{\sum \limits^{n}_{i=1}a^{2}_{i}\sum \limits^{n}_{i=1}b^{2}_{i}} 
++\sum \limits^{n}_{i=1}b^{2}_{i}
+\leqslant
+\sum\limits^{n}_{i=1}a^{2}_{i}
+-2\sum \limits^{n}_{i=1}a_{i}b_{i}
++\sum\limits^{n}_{i=1}b^{2}_{i},\]
+
+
+\end{proof}
+\EndMark
+
+
+
+\StartMark
+\chapter{Chebyshev's Sum Inequality}
+\section{Statement}
+\begin{theorem}
+
+ If
+\[a_1\geqslant a_2\geqslant\cdots\geqslant a_n\]
+and
+\[b_1\geqslant b_2\geqslant\cdots\geqslant b_n,\]
+then
+\begin{equation}
+  \frac{1}{n}\sum_{k=1}^{n}a_k\cdot b_k\geqslant
+  \left(\frac{1}{n}\sum_{k=1}^{n}a_k\right)
+  \left(\frac{1}{n}\sum_{k=1}^{n}b_k\right)\; .
+\end{equation}  
+
+Similarly, if 
+\[a_1\geqslant a_2\geqslant\cdots\geqslant a_n\]
+and
+\[b_1\leqslant b_2\leqslant\cdots\leqslant b_n,\]
+then
+\begin{equation}
+\frac{1}{n}\sum_{k=1}^{n}a_k\cdot b_k\leqslant
+\left(\frac{1}{n}\sum_{k=1}^{n}a_k\right)
+\left(\frac{1}{n}\sum_{k=1}^{n}b_k\right)\; .
+\end{equation} 
+
+\end{theorem}
+
+\section{Proof of the inequality}
+\begin{proof}[\textbf{Proof}]
+	                                       
+	Consider the sum
+	\[S=\sum_{j=1}^n\sum_{k=1}^{n}(a_j-a_k)(b_j-b_k).\]
+	The two sequences are non-increasing, therefore $a_j-a_k$ and $b_j-b_k$ 
+	have the same sign for any $j, k$. Hence $S\geqslant0$.
+	Opening the brackets,we reduce:
+	\[0\leqslant2n\sum_{j=1}^{n}a_jb_j-2\sum_{j=1}^{n}a_j\sum_{k=1}^{n}b_k,\]
+	whence
+	\[\frac{1}{n}\sum_{k=1}^{n}a_k\cdot b_k\geqslant
+	\left(\frac{1}{n}\sum_{k=1}^{n}a_k\right)
+	\left(\frac{1}{n}\sum_{k=1}^{n}b_k\right)\; .\]
+	
+\end{proof}
+
+\EndMark
+
+
+
+\StartMark
+\chapter{Young's Inequality}
+\section{Statement}
+\begin{theorem}
+If $a$ and $b$ are nonnegative real numbers and $p$ and $q$ are positive real numbers such that $\frac{1}{p}+\frac{1}{q}=1$, then
+\begin{equation}
+ab\leqslant\frac{a^p}{p}+\frac{b^q}{q}.
+\end{equation}
+Equality holds if and only if $\displaystyle a^p=b^q$.
+\end{theorem}
+
+
+\section{Proof of the inequality}
+\begin{proof}[\textbf{Proof}]
+
+The claim is certainly true if  $a = 0$ or $b = 0$. Therefore, assume $a>0$ and $b>0$ in the following.  Put $t =\frac{1}{p}$, and $(1-t) = \frac{1}{q}$. Then since the logarithmfunction is strictly concave
+\[\log \left(t a^p +(1-t) b^q \right) \geqslant t \log  \left( a^p\right) + (1-t) \log\left(b^q\right)=\log(a)+\log(b)+w\]
+with equality if and only if $a^p = b^q$. Young's inequality follows by exponentiating.
+\end{proof}
+
+This form of Young's inequality is a special case of the inequality of weighted arithmetic and geometric means and can be used to prove H\"{o}lder's inequality.
+
+\EndMark
+
+
+
+\StartMark
+\chapter{H\"{o}lder's Inequality}
+\section{Statement}
+    \begin{theorem}
+    	Let real numbers $a_i,b_i\geqslant0(i=1,2,\cdots ,n)$, $p,q\in\mathbb{R}\backslash\{0\}$ and $\displaystyle\frac{1}{p}+\frac{1}{q}=1$.\linebreak If $p>1$, then
+    	\begin{equation}
+    	\sum_{i=1}^{n}a_ib_i\leqslant
+    	\left(\sum_{i=1}^{n}a_i^p\right)^{\frac{1}{p}}
+    	\left(\sum_{i=1}^{n}b_i^q\right)^{\frac{1}{q}},\label{10.1}
+    	\end{equation}  
+     and if $p<1$ and $p\neq0$, then
+    	\begin{equation}
+    	\sum_{i=1}^{n}a_ib_i\geqslant
+    	\left(\sum_{i=1}^{n}a_i^p\right)^{\frac{1}{p}}
+    	\left(\sum_{i=1}^{n}b_i^q\right)^{\frac{1}{q}},
+    	\end{equation} 
+with equality if and only if $\alpha a_i^p=\beta b_i^q$, where $i=1,2,\dotso ,n$, $\alpha^2+\beta^2\neq0$.
+    \end{theorem}
+\par\;
+\section{Application}
+   \begin{example}
+   Let $a_i,b_i,m>0$ .We have
+  \begin{equation}
+  \sum_{i=1}^n \frac{a_i^{m+1}}{b_i^m}\geqslant\frac{\left(\displaystyle\sum_{i=1}^n a_i\right)^{m+1}}{\left(\displaystyle\sum_{i=1}^n b_i\right)^{m}},
+  \end{equation} 
+with equality if and only if $a_i=\lambda b_i$.
+\end{example}
+
+\begin{proof}[\textbf{Proof}]
+In formula(\ref{10.1}), assume $p=m+1$ with $m>0$, whence we get
+\[\sum_{i=1}^na_ib_i\leqslant
+\left(\sum_{i=1}^na_i^{m+1}\right)^{\frac{1}{m+1}}
+\left(\sum_{i=1}^nb_i^{\frac{m+1}{m}}\right)^{\frac{m}{m+1}}.\] Then let $a_i=\displaystyle\frac{a_i}{b_i^{\frac{m}{m+1}}}, b_i=b_i^{\frac{m}{m+1}}$, so the above Inquality becomes
+\[\sum_{i=1}^na_i\leqslant
+\left(\sum_{i=1}^n\frac{a_i^{m+1}}{b_i^m}\right)^{\frac{1}{m+1}}
+\left(\sum_{i=1}^n b_i\right)^{\frac{m}{m+1}}.\]
+Rewriting it we obtain
+  \[\sum_{i=1}^n \frac{a_i^{m+1}}{b_i^m}\geqslant\frac{\left(\displaystyle\sum_{i=1}^n a_i\right)^{m+1}}{\left(\displaystyle\sum_{i=1}^n b_i\right)^{m}}.\]
+\end{proof}
+\EndMark
+
+
+
+\StartMark
+\chapter{Minkowski Inequality}
+\section{Statement}
+\begin{theorem}
+If $a_k\geqslant0$, $b_k\geqslant0$,$ k=1,2,\cdots,n$, and $p\ge 1$, then
+\begin{equation}
+\left( \sum \limits^{n}_{k=1}\left( a_{k}+b_{k}\right) ^{p}\right) ^{\frac{1}{p} }\leqslant \left( \sum \limits^{n}_{k=1}a^{p}_{k}\right) ^{\frac{1}{p} }+\left( \sum \limits^{n}_{k=1}b^{p}_{k}\right) ^{\frac{1}{p} },\label{Minkowski}
+\end{equation}
+with equality if and only if $a_k=\lambda b_k$.
+\end{theorem}
+
+
+\section{Proof of the inequality}
+\begin{proof}[\textbf{Proof}]
+\[
+\sum \limits^{n}_{k=1}\left( a_{k}+b_{k}\right) ^{p}=\sum \limits^{n}_{k=1}a_{k}\left( a_{k}+b_{k}\right) ^{p-1}+\sum \limits^{n}_{k=1}b_{k}\left( a_{k}+b_{k}\right) ^{p-1}.\]
+According to H\"{o}lder's inequality, since $\frac{1}{p} +\frac{1}{q} =1$, $p>1$, we have
+\[\sum \limits^{n}_{k=1}a_{k}\left( a_{k}+b_{k}\right) ^{p-1}\leqslant \left( \sum \limits^{n}_{k=1}a^{p}_{k}\right) ^{\frac{1}{p} }\left( \sum \limits^{n}_{k=1}\left( a_{k}+b_{k}\right) ^{q\left( p-1\right) }\right) ^{\frac{1}{q} },
+\tag{a}\]
+\[\sum \limits^{n}_{k=1}b_{k}\left( a_{k}+b_{k}\right) ^{p-1}\leqslant \left( \sum \limits^{n}_{k=1}b^{p}_{k}\right) ^{\frac{1}{p} }\left( \sum \limits^{n}_{k=1}\left( a_{k}+b_{k}\right) ^{q\left( p-1\right) }\right) ^{\frac{1}{q} }.
+\tag{b}\]
+Add (a) to (b) and we have
+\[\sum \limits^{n}_{k=1}\left( a_{k}+b_{k}\right) ^{p}\leqslant\left(\left( \sum \limits^{n}_{k=1}a^{p}_{k}\right) ^{\frac{1}{p} }+\left( \sum \limits^{n}_{k=1}b^{p}_{k}\right) ^{\frac{1}{p} }\right)\left( \sum \limits^{n}_{k=1}\left( a_{k}+b_{k}\right) ^{p}\right) ^{\frac{1}{q} }.\]
+Divide the inequality by $\left( \sum \limits^{n}_{k=1}\left( a_{k}+b_{k}\right) ^{p}\right) ^{\frac{1}{q} }$, thus we obtain (\ref{Minkowski}).
+\end{proof}
+\EndMark
+
+
+
+
+
+
+
+\begin{thebibliography}{}
+
+\bibitem{DavidChandler}
+David Chandler (1987). Introduction to Modern Statistical Mechanics. Oxford. ISBN 0-19-504277-8.
+
+\bibitem{Rudin}
+Walter Rudin(1987). Real and Complex Analysis. McGraw-Hill. ISBN 0-07-054234-1.
+
+\bibitem{Steele}
+Steele, J. Michael (2004). The Cauchy-Schwarz Master Class: An Introduction to the Art of Mathematical Inequalities. MAA Problem Books Series. Cambridge University Press. ISBN 978-0-521-54677-5. OCLC 54079548
+
+\bibitem{Cauchy}
+Cauchy, Augustin-Louis (1821). Cours d'analyse de l'École Royale Polytechnique, première partie, Analyse algébrique, Paris. The proof of the inequality of arithmetic and geometric means can be found on pages 457ff.
+
+\bibitem{Bullen}
+P.S. Bullen, D.S. Mitrinović, P.M. Vasić, "Means and their inequalities" , Reidel (1988)
+
+
+\bibitem{Bityutskov}
+Bityutskov, V.I. (2001), "Bunyakovskii inequality", in Hazewinkel, Michiel, Encyclopedia of Mathematics, Springer, ISBN 978-1-55608-010-4.
+
+\bibitem{Hardy}
+Hardy, G.H.; Littlewood, J.E.; Pólya, G. (1952), Inequalities, Cambridge Mathematical Library (2. ed.), Cambridge: Cambridge University Press, ISBN 0-521-05206-8, MR 0046395, Zbl 0047.05302, Section 10.2, Theorem 368.
+
+\bibitem{Carothers}
+Carothers, N. (2000). Real Analysis. Cambridge: Cambridge University Press. p. 9. ISBN 978-0-521-49756-5.
+
+
+\end{thebibliography}
+
+
+
+\end{document}
